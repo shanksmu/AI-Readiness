@@ -660,6 +660,112 @@
 
   .restart-link:hover { color: var(--text-2); }
 
+  /* ── EMAIL CAPTURE ── */
+  .capture-wrap { padding: 32px 36px; }
+
+  .capture-eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .capture-title {
+    font-family: var(--font-serif);
+    font-size: 24px;
+    line-height: 1.25;
+    color: var(--text-1);
+    margin-bottom: 10px;
+  }
+
+  .capture-sub {
+    font-size: 13.5px;
+    color: var(--text-2);
+    line-height: 1.65;
+    margin-bottom: 28px;
+  }
+
+  .form-row { margin-bottom: 14px; }
+
+  .form-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-2);
+    margin-bottom: 6px;
+    letter-spacing: .02em;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 11px 14px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--text-1);
+    background: var(--surface);
+    border: 1px solid var(--border-med);
+    border-radius: var(--radius-md);
+    outline: none;
+    transition: border-color .15s, box-shadow .15s;
+    -webkit-appearance: none;
+  }
+
+  .form-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(29,78,216,.12);
+  }
+
+  .form-input::placeholder { color: var(--text-3); }
+
+  .privacy-note {
+    font-size: 11px;
+    color: var(--text-3);
+    margin-top: 12px;
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .privacy-note::before {
+    content: '🔒';
+    font-size: 11px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .submit-error {
+    font-size: 12px;
+    color: var(--red);
+    margin-top: 10px;
+    display: none;
+  }
+
+  /* ── SUBMITTING STATE ── */
+  .submitting-wrap {
+    padding: 60px 36px;
+    text-align: center;
+  }
+
+  .spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    margin: 0 auto 16px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .submitting-text {
+    font-size: 14px;
+    color: var(--text-2);
+  }
+
   /* ── FOOTER ── */
   .footer {
     margin-top: 24px;
@@ -691,7 +797,7 @@
     <!-- INTRO SCREEN -->
     <div class="screen active" id="screen-intro">
       <div class="card-header">
-        <div class="brand-tag">Shashank Bhardwaj · Customer Success Leader</div>
+        <div class="brand-tag">Shashank Bhardwaj · 2025</div>
         <h1 class="intro-title">AI Readiness<br><em>Assessment</em></h1>
         <p class="intro-sub">Find out exactly where your CS organization stands — across data, technology, team skills, and leadership alignment. Takes about 5 minutes.</p>
         <div class="meta-row">
@@ -758,6 +864,42 @@
       </div>
     </div>
 
+    <!-- EMAIL CAPTURE SCREEN -->
+    <div class="screen" id="screen-capture">
+      <div class="capture-wrap">
+        <p class="capture-eyebrow">Almost there</p>
+        <h2 class="capture-title">Where should we send your results?</h2>
+        <p class="capture-sub">Enter your details below to see your full AI Readiness score and dimension breakdown. Your results are part of an ongoing industry benchmarking study — aggregated findings will be shared publicly.</p>
+        <div class="form-row">
+          <label class="form-label" for="input-name">Full name</label>
+          <input class="form-input" id="input-name" type="text" placeholder="e.g. Sarah Chen" autocomplete="name">
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="input-email">Work email</label>
+          <input class="form-input" id="input-email" type="email" placeholder="you@company.com" autocomplete="email">
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="input-role">Your role <span style="font-weight:400;color:var(--text-3)">(optional)</span></label>
+          <input class="form-input" id="input-role" type="text" placeholder="e.g. VP of Customer Success">
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="input-company">Company <span style="font-weight:400;color:var(--text-3)">(optional)</span></label>
+          <input class="form-input" id="input-company" type="text" placeholder="e.g. Acme Corp">
+        </div>
+        <button class="btn btn-primary btn-full" onclick="submitAndShowResults()" style="margin-top:8px">See my results &rarr;</button>
+        <p class="submit-error" id="submit-error">Please enter your name and a valid work email to continue.</p>
+        <p class="privacy-note">Your information is used only for this benchmarking study. Aggregated, anonymised findings will be shared publicly. No spam — ever.</p>
+      </div>
+    </div>
+
+    <!-- SUBMITTING SCREEN -->
+    <div class="screen" id="screen-submitting">
+      <div class="submitting-wrap">
+        <div class="spinner"></div>
+        <p class="submitting-text">Calculating your results…</p>
+      </div>
+    </div>
+
     <!-- RESULTS SCREEN -->
     <div class="screen" id="screen-results">
       <div class="results-hero">
@@ -793,7 +935,7 @@
             <li>Real case studies: Iron Mountain, Lightspeed, Synthesia</li>
             <li>The CARE prompt engineering framework for CS workflows</li>
           </ul>
-          <button class="btn-cta" onclick="window.open('https://shashankbhardwaj.gumroad.com/l/ecpmbs','_blank')">
+          <button class="btn-cta" onclick="window.open('https://gumroad.com','_blank')">
             <span>Get the full playbook</span>
             <span class="btn-cta-arrow">→</span>
           </button>
@@ -807,12 +949,19 @@
 
   <p class="footer">
     <strong>Implementing AI in Customer Success</strong> · by Shashank Bhardwaj<br>
-    AI Readiness Assessment · 2026
+    AI Readiness Assessment · 2025 Edition
   </p>
 
 </div>
 
 <script>
+// ── GOOGLE SHEETS ENDPOINT ──────────────────────────────────────────────────
+// 1. Open Google Sheets → Extensions → Apps Script
+// 2. Paste the Apps Script code provided below and deploy as Web App
+// 3. Copy the Web App URL and paste it here
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxiAIq7CzucfPQMl8BWAZMW_onLD4loW1ImM7jHhRSLbdLPR1fug4VmIPdfjqz2HaBTNw/exec';
+// ────────────────────────────────────────────────────────────────────────────
+
 const dims = [
   {
     id:'data', name:'Data readiness', desc:'How complete, clean, and accessible your customer data is',
@@ -1021,22 +1170,12 @@ function nextQuestion(){
   const dim=dims[currentDim];
   if(currentQ<dim.questions.length-1){ currentQ++; }
   else if(currentDim<dims.length-1){ currentDim++; currentQ=0; }
-  else{ showResults(); return; }
+  else{ showCapture(); return; }
   renderQuestion();
 }
 
-function showResults(){
+function showResults(dimScores, overall){
   showScreen('screen-results');
-  const dimScores=dims.map((dim,di)=>{
-    let total=0;
-    dim.questions.forEach((_,qi)=>{
-      const ans=answers[`${di}-${qi}`];
-      if(ans!==undefined) total+=dim.questions[qi].options[ans].score;
-    });
-    return Math.round((total/(dim.questions.length*4))*100);
-  });
-
-  const overall=Math.round(dimScores.reduce((a,b)=>a+b,0)/dimScores.length);
   document.getElementById('overall-score-display').textContent=overall;
 
   let stage,stageColor,stageBg,stageDesc;
@@ -1093,6 +1232,64 @@ function showResults(){
   setTimeout(()=>{
     document.querySelectorAll('.bar-fill').forEach(b=>{ b.style.width=b.dataset.w+'%'; });
   },120);
+}
+
+function showCapture(){
+  showScreen('screen-capture');
+  document.getElementById('submit-error').style.display='none';
+}
+
+function submitAndShowResults(){
+  const name  = document.getElementById('input-name').value.trim();
+  const email = document.getElementById('input-email').value.trim();
+  const role  = document.getElementById('input-role').value.trim();
+  const company = document.getElementById('input-company').value.trim();
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  if(!name || !emailOk){
+    document.getElementById('submit-error').style.display='block';
+    return;
+  }
+
+  document.getElementById('submit-error').style.display='none';
+  showScreen('screen-submitting');
+
+  const dimScores = dims.map((dim,di)=>{
+    let total=0;
+    dim.questions.forEach((_,qi)=>{
+      const ans=answers[`${di}-${qi}`];
+      if(ans!==undefined) total+=dim.questions[qi].options[ans].score;
+    });
+    return Math.round((total/(dim.questions.length*4))*100);
+  });
+  const overall=Math.round(dimScores.reduce((a,b)=>a+b,0)/dimScores.length);
+
+  const payload = {
+    timestamp:   new Date().toISOString(),
+    name,
+    email,
+    role,
+    company,
+    overall,
+    data_score:       dimScores[0],
+    tech_score:       dimScores[1],
+    team_score:       dimScores[2],
+    leadership_score: dimScores[3],
+    stage: overall<=25?'Stage 1: Exploring':overall<=45?'Stage 2: Piloting':overall<=65?'Stage 3: Implementing':overall<=85?'Stage 4: Optimizing':'Stage 5: AI-Native'
+  };
+
+  if(SCRIPT_URL && SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE'){
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode:   'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    })
+    .catch(()=>{})
+    .finally(()=>{ showResults(dimScores, overall); });
+  } else {
+    setTimeout(()=>{ showResults(dimScores, overall); }, 800);
+  }
 }
 
 function restartAssessment(){
