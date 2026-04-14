@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Readiness Assessment — Implementing AI in Customer Success</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:          #F7F6F2;
+    --surface:     #FFFFFF;
+    --surface-2:   #F0EFE9;
+    --border:      #E2E0D8;
+    --border-med:  #CCCAB8;
+    --text-1:      #1A1916;
+    --text-2:      #5C5A52;
+    --text-3:      #9B9990;
+    --accent:      #1D4ED8;
+    --accent-bg:   #EFF4FF;
+    --accent-bdr:  #BFCFFF;
+    --green:       #15803D;
+    --green-bg:    #F0FDF4;
+    --green-bdr:   #BBF7D0;
+    --amber:       #B45309;
+    --amber-bg:    #FFFBEB;
+    --amber-bdr:   #FDE68A;
+    --red:         #B91C1C;
+    --red-bg:      #FFF1F1;
+    --red-bdr:     #FECACA;
+    --purple:      #6D28D9;
+    --purple-bg:   #F5F3FF;
+    --purple-bdr:  #DDD6FE;
+    --radius-sm:   6px;
+    --radius-md:   10px;
+    --radius-lg:   16px;
+    --radius-xl:   24px;
+    --shadow-sm:   0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+    --shadow-md:   0 4px 12px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.04);
+    --font-sans:   'DM Sans', sans-serif;
+    --font-serif:  'DM Serif Display', serif;
+  }
+
+  html { font-size: 16px; }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--text-1);
+    min-height: 100vh;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page-wrap {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 40px 20px 80px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    width: 100%;
+    max-width: 620px;
+    overflow: hidden;
+  }
+
+  .card-header {
+    padding: 32px 36px 28px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .brand-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-bdr);
+    border-radius: 100px;
+    padding: 3px 10px;
+    margin-bottom: 16px;
+  }
+
+  .card-body { padding: 32px 36px; }
+
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ── INTRO ── */
+  .intro-title {
+    font-family: var(--font-serif);
+    font-size: 30px;
+    line-height: 1.2;
+    color: var(--text-1);
+    margin-bottom: 10px;
+  }
+
+  .intro-sub {
+    font-size: 14px;
+    color: var(--text-2);
+    line-height: 1.7;
+    margin-bottom: 28px;
+  }
+
+  .dim-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  .dim-tile {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .dim-tile-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 5px;
+  }
+
+  .dim-tile-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-1);
+    margin-bottom: 2px;
+  }
+
+  .dim-tile-desc {
+    font-size: 12px;
+    color: var(--text-3);
+  }
+
+  .meta-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 28px;
+  }
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-3);
+  }
+
+  .meta-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--border-med);
+    flex-shrink: 0;
+  }
+
+  /* ── PROGRESS ── */
+  .progress-section {
+    padding: 16px 36px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+  }
+
+  .progress-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .progress-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--text-3);
+  }
+
+  .progress-pct {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-2);
+  }
+
+  .progress-track {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width .4s ease;
+  }
+
+  /* ── DIMENSION HEADER ── */
+  .dim-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 36px 0;
+    margin-bottom: 20px;
+  }
+
+  .dim-badge {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    flex-shrink: 0;
+    border: 1px solid;
+  }
+
+  .dim-badge-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-1);
+    margin-bottom: 1px;
+  }
+
+  .dim-badge-sub {
+    font-size: 12px;
+    color: var(--text-3);
+  }
+
+  /* ── QUESTION ── */
+  .q-area { padding: 0 36px 28px; }
+
+  .q-eyebrow {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 10px;
+  }
+
+  .q-text {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-1);
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+
+  .options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+
+  .opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 13px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: border-color .15s ease, background .15s ease, transform .1s ease;
+    background: var(--surface);
+    user-select: none;
+  }
+
+  .opt:hover {
+    border-color: var(--border-med);
+    background: var(--surface-2);
+    transform: translateX(2px);
+  }
+
+  .opt.selected {
+    border-color: var(--accent-bdr);
+    background: var(--accent-bg);
+  }
+
+  .opt-radio {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border-med);
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .15s ease;
+    background: var(--surface);
+  }
+
+  .opt.selected .opt-radio {
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+
+  .opt.selected .opt-radio::after {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #fff;
+    display: block;
+  }
+
+  .opt-label {
+    font-size: 13.5px;
+    color: var(--text-1);
+    line-height: 1.55;
+  }
+
+  .opt.selected .opt-label { color: var(--accent); }
+
+  .nav-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 4px;
+  }
+
+  .q-counter {
+    font-size: 12px;
+    color: var(--text-3);
+    font-weight: 400;
+  }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 22px;
+    border-radius: var(--radius-md);
+    border: none;
+    cursor: pointer;
+    transition: all .15s ease;
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 1px 3px rgba(29,78,216,.3);
+  }
+
+  .btn-primary:hover { background: #1e40af; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(29,78,216,.3); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-primary:disabled { background: var(--border-med); color: var(--text-3); cursor: not-allowed; box-shadow: none; transform: none; }
+
+  .btn-full { width: 100%; }
+
+  .btn-ghost {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-2);
+    font-size: 12px;
+    padding: 6px 14px;
+  }
+
+  .btn-ghost:hover { background: var(--surface-2); border-color: var(--border-med); }
+
+  /* ── RESULTS ── */
+  .results-hero {
+    background: var(--text-1);
+    padding: 32px 36px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .score-display { color: #fff; }
+
+  .score-eyebrow {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.5);
+    margin-bottom: 8px;
+  }
+
+  .score-num {
+    font-family: var(--font-serif);
+    font-size: 64px;
+    line-height: 1;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+
+  .score-denom {
+    font-size: 13px;
+    color: rgba(255,255,255,.5);
+  }
+
+  .stage-display { text-align: right; color: #fff; }
+
+  .stage-eyebrow {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.5);
+    margin-bottom: 8px;
+  }
+
+  .stage-pill {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 14px;
+    border-radius: 100px;
+    margin-bottom: 6px;
+  }
+
+  .stage-desc-txt {
+    font-size: 12px;
+    color: rgba(255,255,255,.5);
+    max-width: 200px;
+    line-height: 1.4;
+  }
+
+  .results-body { padding: 28px 36px; }
+
+  .section-heading {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .result-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 16px 18px;
+    margin-bottom: 10px;
+    background: var(--surface);
+  }
+
+  .result-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .result-card-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .result-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+    border: 1px solid;
+  }
+
+  .result-dim-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-1);
+  }
+
+  .result-score-badge {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 100px;
+    border: 1px solid;
+  }
+
+  .bar-track {
+    height: 5px;
+    background: var(--surface-2);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 1.2s cubic-bezier(.4,0,.2,1);
+  }
+
+  .result-insight {
+    font-size: 12.5px;
+    color: var(--text-2);
+    line-height: 1.6;
+  }
+
+  .priority-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 18px;
+    margin-bottom: 10px;
+  }
+
+  .priority-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .priority-label::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--amber);
+  }
+
+  .priority-text {
+    font-size: 13px;
+    color: var(--text-1);
+    line-height: 1.65;
+  }
+
+  .cta-card {
+    background: var(--text-1);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin-top: 24px;
+    color: #fff;
+  }
+
+  .cta-eyebrow {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.5);
+    margin-bottom: 8px;
+  }
+
+  .cta-title {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    color: #fff;
+    margin-bottom: 10px;
+    line-height: 1.3;
+  }
+
+  .cta-body {
+    font-size: 13px;
+    color: rgba(255,255,255,.65);
+    line-height: 1.65;
+    margin-bottom: 20px;
+  }
+
+  .cta-points {
+    list-style: none;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .cta-points li {
+    font-size: 12.5px;
+    color: rgba(255,255,255,.7);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.5;
+  }
+
+  .cta-points li::before {
+    content: '→';
+    color: rgba(255,255,255,.4);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .btn-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 18px;
+    background: #fff;
+    color: var(--text-1);
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    width: 100%;
+    font-family: var(--font-sans);
+    transition: opacity .15s;
+  }
+
+  .btn-cta:hover { opacity: .9; }
+
+  .btn-cta-arrow {
+    font-size: 16px;
+    opacity: .5;
+  }
+
+  .restart-link {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 12px;
+    color: var(--text-3);
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: var(--font-sans);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .restart-link:hover { color: var(--text-2); }
+
+  /* ── FOOTER ── */
+  .footer {
+    margin-top: 24px;
+    font-size: 11px;
+    color: var(--text-3);
+    text-align: center;
+    line-height: 1.6;
+  }
+
+  .footer strong { color: var(--text-2); font-weight: 500; }
+
+  @media (max-width: 500px) {
+    .card-header, .card-body, .q-area, .results-body { padding-left: 20px; padding-right: 20px; }
+    .progress-section { padding-left: 20px; padding-right: 20px; }
+    .dim-header { padding-left: 20px; }
+    .results-hero { padding: 24px 20px; flex-direction: column; gap: 16px; }
+    .stage-display { text-align: left; }
+    .dim-grid { grid-template-columns: 1fr; }
+    .score-num { font-size: 48px; }
+    .intro-title { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <div class="card">
+
+    <!-- INTRO SCREEN -->
+    <div class="screen active" id="screen-intro">
+      <div class="card-header">
+        <div class="brand-tag">Shashank Bhardwaj · Customer Success Leader</div>
+        <h1 class="intro-title">AI Readiness<br><em>Assessment</em></h1>
+        <p class="intro-sub">Find out exactly where your CS organization stands — across data, technology, team skills, and leadership alignment. Takes about 5 minutes.</p>
+        <div class="meta-row">
+          <span class="meta-item"><span class="meta-dot"></span>20 questions</span>
+          <span class="meta-item"><span class="meta-dot"></span>4 dimensions</span>
+          <span class="meta-item"><span class="meta-dot"></span>~5 minutes</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="dim-grid">
+          <div class="dim-tile">
+            <div class="dim-tile-dot" style="background:#1D4ED8"></div>
+            <div>
+              <div class="dim-tile-name">Data readiness</div>
+              <div class="dim-tile-desc">Quality, coverage & accessibility</div>
+            </div>
+          </div>
+          <div class="dim-tile">
+            <div class="dim-tile-dot" style="background:#15803D"></div>
+            <div>
+              <div class="dim-tile-name">Technology stack</div>
+              <div class="dim-tile-desc">Tools, integrations & infrastructure</div>
+            </div>
+          </div>
+          <div class="dim-tile">
+            <div class="dim-tile-dot" style="background:#B45309"></div>
+            <div>
+              <div class="dim-tile-name">Team readiness</div>
+              <div class="dim-tile-desc">Skills, adoption & mindset</div>
+            </div>
+          </div>
+          <div class="dim-tile">
+            <div class="dim-tile-dot" style="background:#6D28D9"></div>
+            <div>
+              <div class="dim-tile-name">Leadership alignment</div>
+              <div class="dim-tile-desc">Sponsorship, budget & vision</div>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="startAssessment()">Begin assessment &rarr;</button>
+      </div>
+    </div>
+
+    <!-- QUESTIONS SCREEN -->
+    <div class="screen" id="screen-questions">
+      <div class="progress-section">
+        <div class="progress-top">
+          <span class="progress-label" id="q-section-label">Section</span>
+          <span class="progress-pct" id="q-pct-label">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+        </div>
+      </div>
+      <div id="dim-header-area"></div>
+      <div class="q-area">
+        <p class="q-eyebrow" id="q-eyebrow"></p>
+        <p class="q-text" id="q-text"></p>
+        <div class="options" id="options-area"></div>
+        <div class="nav-row">
+          <span class="q-counter" id="q-counter"></span>
+          <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()" disabled>Next &rarr;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULTS SCREEN -->
+    <div class="screen" id="screen-results">
+      <div class="results-hero">
+        <div class="score-display">
+          <p class="score-eyebrow">Overall readiness score</p>
+          <div class="score-num" id="overall-score-display">--</div>
+          <p class="score-denom">out of 100</p>
+        </div>
+        <div class="stage-display">
+          <p class="stage-eyebrow">Maturity stage</p>
+          <div class="stage-pill" id="stage-badge-display">--</div>
+          <p class="stage-desc-txt" id="stage-desc-display"></p>
+        </div>
+      </div>
+
+      <div class="results-body">
+        <p class="section-heading">Dimension breakdown</p>
+        <div id="dim-results-area"></div>
+
+        <p class="section-heading" style="margin-top:24px">Your top priority</p>
+        <div class="priority-card">
+          <p class="priority-label">Focus here first</p>
+          <p class="priority-text" id="top-priority-text"></p>
+        </div>
+
+        <div class="cta-card">
+          <p class="cta-eyebrow">Next step</p>
+          <p class="cta-title">Ready to close these gaps?</p>
+          <p class="cta-body">Implementing AI in Customer Success covers exactly how to move from your current stage to the next — with a phased roadmap, tool-by-tool implementation guides, and a week-by-week 30-60-90 day action plan.</p>
+          <ul class="cta-points">
+            <li>31 chapters across 7 parts</li>
+            <li>15+ tool deep-dives with step-by-step implementation</li>
+            <li>Real case studies: Iron Mountain, Lightspeed, Synthesia</li>
+            <li>The CARE prompt engineering framework for CS workflows</li>
+          </ul>
+          <button class="btn-cta" onclick="window.open('https://shashankbhardwaj.gumroad.com/l/ecpmbs','_blank')">
+            <span>Get the full playbook</span>
+            <span class="btn-cta-arrow">→</span>
+          </button>
+        </div>
+
+        <button class="restart-link" onclick="restartAssessment()">Retake assessment</button>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="footer">
+    <strong>Implementing AI in Customer Success</strong> · by Shashank Bhardwaj<br>
+    AI Readiness Assessment · 2026
+  </p>
+
+</div>
+
+<script>
+const dims = [
+  {
+    id:'data', name:'Data readiness', desc:'How complete, clean, and accessible your customer data is',
+    icon:'D', color:'#1D4ED8', colorLight:'#EFF4FF', colorBdr:'#BFCFFF', barColor:'#3B82F6',
+    questions:[
+      { text:'How complete is your customer data across key sources (product usage, support, CRM, communication)?', options:[
+        {text:'Highly fragmented — data lives in silos with no unified view',score:1},
+        {text:'Partially connected — some integrations but significant gaps',score:2},
+        {text:'Mostly connected — most key sources integrated with some gaps',score:3},
+        {text:'Fully unified — clean, real-time data accessible from one place',score:4}
+      ]},
+      { text:'How confident are you in the accuracy and freshness of your customer health data?', options:[
+        {text:'Low confidence — data is often stale or manually maintained',score:1},
+        {text:'Some confidence — automated for core metrics but manual elsewhere',score:2},
+        {text:'Moderate confidence — automated with occasional quality issues',score:3},
+        {text:'High confidence — automated, validated, and refreshed in near real-time',score:4}
+      ]},
+      { text:'Do you capture and store conversation data (call recordings, email threads, meeting notes) in a structured way?', options:[
+        {text:'No — conversation data is mostly lost or unstructured',score:1},
+        {text:'Partially — some calls recorded but no systematic capture',score:2},
+        {text:'Mostly — structured capture with some gaps',score:3},
+        {text:'Yes — all key conversations captured, transcribed, and searchable',score:4}
+      ]},
+      { text:'How many years of historical customer data do you have that could train predictive models?', options:[
+        {text:'Less than 1 year or data quality is too poor to use',score:1},
+        {text:'1–2 years of usable historical data',score:2},
+        {text:'2–3 years of reasonably clean historical data',score:3},
+        {text:'3+ years of clean, well-structured historical data',score:4}
+      ]},
+      { text:'Can AI tools in your stack currently access the data they need via APIs or native integrations?', options:[
+        {text:'No — data is locked in systems with no API access',score:1},
+        {text:'Limited — a few integrations but major sources are inaccessible',score:2},
+        {text:'Mostly — most key sources accessible with some manual workarounds',score:3},
+        {text:'Yes — open API architecture with full data accessibility',score:4}
+      ]}
+    ]
+  },
+  {
+    id:'tech', name:'Technology stack', desc:'Your current tools, integrations, and AI feature activation',
+    icon:'T', color:'#15803D', colorLight:'#F0FDF4', colorBdr:'#BBF7D0', barColor:'#22C55E',
+    questions:[
+      { text:'Which best describes your current CS platform AI adoption?', options:[
+        {text:'No CS platform or no AI features activated',score:1},
+        {text:'Have a CS platform but AI features are unused or just enabled',score:2},
+        {text:'Actively using 1–2 AI features (health scoring, email drafting)',score:3},
+        {text:'Using AI features extensively across the full platform',score:4}
+      ]},
+      { text:'Does your team use conversation intelligence tools (e.g. Gong, UpdateAI) for CS calls?', options:[
+        {text:'No — calls are not recorded or analyzed',score:1},
+        {text:'Basic recording only — no AI analysis',score:2},
+        {text:'Using AI summaries but not fully integrated into workflows',score:3},
+        {text:'Fully deployed — summaries, insights, and CRM logging automated',score:4}
+      ]},
+      { text:'How mature is your customer-facing AI (chatbots, AI agents, self-serve support)?', options:[
+        {text:'None — all support and CS is human-handled',score:1},
+        {text:'Basic chatbot or FAQ bot with limited AI capability',score:2},
+        {text:'AI agent deployed for some channels with moderate resolution rate',score:3},
+        {text:'Advanced AI agent resolving 50%+ of queries with human escalation',score:4}
+      ]},
+      { text:'How well does your current tech stack integrate across CS, support, CRM, and product analytics?', options:[
+        {text:'Highly siloed — tools operate independently with no data sharing',score:1},
+        {text:'Partially integrated — some tools connected, others manual',score:2},
+        {text:'Mostly integrated — most tools share data with occasional gaps',score:3},
+        {text:'Fully integrated — unified data flow across all key systems',score:4}
+      ]},
+      { text:'Have you conducted an audit of AI features already available in your existing tools?', options:[
+        {text:'No audit done — unsure what AI capabilities we have',score:1},
+        {text:'Informal awareness — some features known but not systematically reviewed',score:2},
+        {text:'Partial audit — key platforms reviewed, some features activated',score:3},
+        {text:'Full audit complete — all available AI features catalogued and evaluated',score:4}
+      ]}
+    ]
+  },
+  {
+    id:'team', name:'Team readiness', desc:'Skills, adoption mindset, and day-to-day AI usage',
+    icon:'P', color:'#B45309', colorLight:'#FFFBEB', colorBdr:'#FDE68A', barColor:'#F59E0B',
+    questions:[
+      { text:"What best describes your CS team's current AI literacy and usage?", options:[
+        {text:'Most CSMs have not used AI tools in their workflow',score:1},
+        {text:'Some individuals experiment with AI (ChatGPT etc.) informally',score:2},
+        {text:'AI tools are used regularly by most CSMs for specific tasks',score:3},
+        {text:'AI is integral to daily workflow — team cannot imagine working without it',score:4}
+      ]},
+      { text:"How would you characterize your team's attitude toward AI adoption?", options:[
+        {text:'Mostly resistant or anxious — concerns about job displacement',score:1},
+        {text:'Mixed — enthusiastic minority, skeptical majority',score:2},
+        {text:'Mostly open — cautious but willing to experiment',score:3},
+        {text:'Enthusiastic — team actively seeks new AI capabilities',score:4}
+      ]},
+      { text:'How skilled is your team at prompt engineering and getting quality outputs from AI tools?', options:[
+        {text:'No prompt engineering skills — using AI tools as-is',score:1},
+        {text:'Basic — using provided templates without customization',score:2},
+        {text:'Intermediate — can customize prompts and improve outputs',score:3},
+        {text:'Advanced — team builds prompt libraries and trains others',score:4}
+      ]},
+      { text:'Do you have identified AI champions or early adopters who could lead a pilot?', options:[
+        {text:'No — no one has expressed strong interest in leading AI adoption',score:1},
+        {text:'Maybe 1–2 people but not formally identified',score:2},
+        {text:'Yes — have 3–5 identified champions ready to pilot',score:3},
+        {text:'Yes — have champions plus a formal AI enablement structure',score:4}
+      ]},
+      { text:'How much formal AI training has your CS team received?', options:[
+        {text:'None — no structured training has taken place',score:1},
+        {text:'Minimal — one-off demos or vendor webinars only',score:2},
+        {text:'Moderate — structured onboarding to key tools with follow-up',score:3},
+        {text:'Comprehensive — ongoing program covering tools, prompts, and workflows',score:4}
+      ]}
+    ]
+  },
+  {
+    id:'leadership', name:'Leadership alignment', desc:'Executive sponsorship, budget, and strategic vision',
+    icon:'L', color:'#6D28D9', colorLight:'#F5F3FF', colorBdr:'#DDD6FE', barColor:'#8B5CF6',
+    questions:[
+      { text:"How aligned is your executive team on the importance of AI in CS?", options:[
+        {text:"Not a priority — AI is not on leadership's radar",score:1},
+        {text:"Aware but passive — leadership knows it matters but hasn't acted",score:2},
+        {text:"Supportive — leadership endorses AI but hasn't formally committed",score:3},
+        {text:'Actively championing — executive sponsor with budget and accountability',score:4}
+      ]},
+      { text:'Has budget been allocated for AI tools and implementation in the current planning cycle?', options:[
+        {text:'No budget — would require a new business case from scratch',score:1},
+        {text:'No dedicated budget but could request via existing channels',score:2},
+        {text:'Partial budget — some funds available, more may require approval',score:3},
+        {text:'Dedicated budget — allocated and ready to deploy',score:4}
+      ]},
+      { text:'Does your organization have a defined AI strategy or roadmap for CS?', options:[
+        {text:'No strategy — individual experiments only, no coordinated plan',score:1},
+        {text:'Informal — general awareness of direction but nothing documented',score:2},
+        {text:'Documented — strategy exists with priorities and rough timeline',score:3},
+        {text:'Operational — strategy with KPIs, owners, and quarterly milestones',score:4}
+      ]},
+      { text:'How does your organization approach AI governance (data privacy, ethics, quality controls)?', options:[
+        {text:'No governance — AI use is ungoverned and ad hoc',score:1},
+        {text:'Minimal — basic awareness but no formal policies',score:2},
+        {text:'Developing — policies in progress, some controls in place',score:3},
+        {text:'Mature — documented governance with monitoring and incident protocols',score:4}
+      ]},
+      { text:'How clear is your organization on what success looks like for AI in CS (metrics, ROI targets)?', options:[
+        {text:'Not defined — no success metrics established',score:1},
+        {text:'Vague — general expectations but no specific targets',score:2},
+        {text:'Defined — clear metrics with moderate tracking in place',score:3},
+        {text:'Rigorously tracked — three-layer ROI framework with exec reporting',score:4}
+      ]}
+    ]
+  }
+];
+
+let currentDim=0, currentQ=0, answers={}, totalQ=0, answeredQ=0;
+dims.forEach(d => totalQ += d.questions.length);
+
+function startAssessment(){
+  currentDim=0; currentQ=0; answers={}; answeredQ=0;
+  showScreen('screen-questions');
+  renderQuestion();
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function renderQuestion(){
+  const dim=dims[currentDim], q=dim.questions[currentQ];
+  const globalIdx=dims.slice(0,currentDim).reduce((a,d)=>a+d.questions.length,0)+currentQ;
+  const pct=Math.round((answeredQ/totalQ)*100);
+  document.getElementById('progress-fill').style.width=Math.max(pct,2)+'%';
+  document.getElementById('q-pct-label').textContent=pct+'%';
+  document.getElementById('q-section-label').textContent=dim.name;
+  document.getElementById('q-eyebrow').textContent=`Question ${globalIdx+1} of ${totalQ}`;
+  document.getElementById('q-text').textContent=q.text;
+  document.getElementById('q-counter').textContent=`${dim.name} · ${currentQ+1}/${dim.questions.length}`;
+
+  const isFirst=currentQ===0;
+  document.getElementById('dim-header-area').innerHTML=isFirst?`
+    <div class="dim-header">
+      <div class="dim-badge" style="background:${dim.colorLight};color:${dim.color};border-color:${dim.colorBdr}">${dim.icon}</div>
+      <div>
+        <div class="dim-badge-title">${dim.name}</div>
+        <div class="dim-badge-sub">${dim.desc}</div>
+      </div>
+    </div>`:'';
+
+  const key=`${currentDim}-${currentQ}`, saved=answers[key];
+  document.getElementById('options-area').innerHTML=q.options.map((opt,i)=>`
+    <div class="opt${saved===i?' selected':''}" onclick="selectOption(${i})">
+      <div class="opt-radio"></div>
+      <div class="opt-label">${opt.text}</div>
+    </div>`).join('');
+
+  const isLast=currentDim===dims.length-1&&currentQ===dims[currentDim].questions.length-1;
+  document.getElementById('next-btn').textContent=isLast?'See my results →':'Next →';
+  document.getElementById('next-btn').disabled=saved===undefined;
+}
+
+function selectOption(i){
+  const key=`${currentDim}-${currentQ}`;
+  if(answers[key]===undefined) answeredQ++;
+  answers[key]=i;
+  document.querySelectorAll('.opt').forEach((el,idx)=>{
+    el.classList.toggle('selected',idx===i);
+  });
+  document.getElementById('next-btn').disabled=false;
+}
+
+function nextQuestion(){
+  const dim=dims[currentDim];
+  if(currentQ<dim.questions.length-1){ currentQ++; }
+  else if(currentDim<dims.length-1){ currentDim++; currentQ=0; }
+  else{ showResults(); return; }
+  renderQuestion();
+}
+
+function showResults(){
+  showScreen('screen-results');
+  const dimScores=dims.map((dim,di)=>{
+    let total=0;
+    dim.questions.forEach((_,qi)=>{
+      const ans=answers[`${di}-${qi}`];
+      if(ans!==undefined) total+=dim.questions[qi].options[ans].score;
+    });
+    return Math.round((total/(dim.questions.length*4))*100);
+  });
+
+  const overall=Math.round(dimScores.reduce((a,b)=>a+b,0)/dimScores.length);
+  document.getElementById('overall-score-display').textContent=overall;
+
+  let stage,stageColor,stageBg,stageDesc;
+  if(overall<=25){stage='Stage 1: Exploring';stageColor='#FECACA';stageBg='rgba(185,28,28,0.9)';stageDesc='Early awareness, no active implementation';}
+  else if(overall<=45){stage='Stage 2: Piloting';stageColor='#FDE68A';stageBg='rgba(180,83,9,0.9)';stageDesc='Testing 1–2 tools with small groups';}
+  else if(overall<=65){stage='Stage 3: Implementing';stageColor='#BFCFFF';stageBg='rgba(29,78,216,0.9)';stageDesc='Rolling out to full team, tracking impact';}
+  else if(overall<=85){stage='Stage 4: Optimizing';stageColor='#BBF7D0';stageBg='rgba(21,128,61,0.9)';stageDesc='AI integral to workflows, measuring ROI';}
+  else{stage='Stage 5: AI-Native';stageColor='#DDD6FE';stageBg='rgba(109,40,217,0.9)';stageDesc='AI is the core operating model';}
+
+  const badge=document.getElementById('stage-badge-display');
+  badge.textContent=stage;
+  badge.style.background=stageBg;
+  badge.style.color=stageColor;
+  document.getElementById('stage-desc-display').textContent=stageDesc;
+
+  const insights=[
+    ['Your customer data is highly fragmented — the most common AI blocker. Connect your top 2–3 data sources before investing in new tools.','Data is partially connected but key gaps exist. Prioritize integrating your CS platform with product usage data.','Strong data foundation. Focus on real-time freshness and automated quality validation.','Excellent data readiness. You have the foundation to trust and train predictive models.'],
+    ['No AI tools activated yet — audit what\'s already available in your existing CS platform before purchasing anything new.','Tools exist but AI features are largely unused. Activate health scoring and AI summaries in your current platform this week.','Good tool adoption. Consider adding conversation intelligence (Gong/UpdateAI) if not already deployed.','Strong tech stack. Focus on cross-tool orchestration and advanced agentic capabilities.'],
+    ['Team adoption is the biggest risk to any AI initiative. Identify 3–5 champions and run a structured pilot before broader rollout.','Mixed attitudes require careful change management. Lead with the 20% who are enthusiastic — let peer results convert the rest.','Solid team readiness. Invest in prompt engineering training to move from basic to advanced AI outputs.','High-performing team. Build a formal AI Center of Excellence to sustain momentum and drive innovation.'],
+    ['Without executive sponsorship, AI initiatives stall at the first budget review. Build a business case before launching anything.','Leadership awareness exists but needs formal commitment. Present the three-layer ROI model to secure a defined budget.','Good leadership support. Establish clear success metrics so wins are visible at board level.','Strong leadership alignment. You have the organizational conditions for rapid AI scaling.']
+  ];
+
+  const priorities=[
+    'Your biggest gap is data readiness. Before selecting or expanding AI tools, focus on connecting your top 2–3 data sources and establishing data hygiene processes. Clean, accessible data is the single most important foundation for everything that follows.',
+    'Your biggest gap is your technology stack. Run an audit of AI features already available in your current CS platform — most teams find significant capabilities they\'re already paying for but haven\'t activated. Start there before buying anything new.',
+    'Your biggest gap is team readiness. The most technically advanced AI program will fail without adoption. Identify your 3–5 most enthusiastic CSMs and run a structured 6-week pilot. Let peer results do the selling to the rest of the team.',
+    'Your biggest gap is leadership alignment. AI initiatives without executive sponsorship get cut at the first quarterly review. Build and present a three-layer ROI business case — efficiency savings, effectiveness gains, and business impact — before launching anything at scale.'
+  ];
+
+  const lowestDim=dimScores.indexOf(Math.min(...dimScores));
+  document.getElementById('top-priority-text').textContent=priorities[lowestDim];
+
+  document.getElementById('dim-results-area').innerHTML=dims.map((dim,i)=>{
+    const score=dimScores[i];
+    const insightIdx=score<=25?0:score<=50?1:score<=75?2:3;
+    let scoreColor, scoreBg, scoreBdr;
+    if(score<=35){scoreColor='#B91C1C';scoreBg='#FFF1F1';scoreBdr='#FECACA';}
+    else if(score<=60){scoreColor='#B45309';scoreBg='#FFFBEB';scoreBdr='#FDE68A';}
+    else if(score<=80){scoreColor='#1D4ED8';scoreBg='#EFF4FF';scoreBdr='#BFCFFF';}
+    else{scoreColor='#15803D';scoreBg='#F0FDF4';scoreBdr='#BBF7D0';}
+    return `<div class="result-card">
+      <div class="result-card-top">
+        <div class="result-card-left">
+          <div class="result-icon" style="background:${dim.colorLight};color:${dim.color};border-color:${dim.colorBdr}">${dim.icon}</div>
+          <span class="result-dim-name">${dim.name}</span>
+        </div>
+        <span class="result-score-badge" style="color:${scoreColor};background:${scoreBg};border-color:${scoreBdr}">${score}/100</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill" style="width:0%;background:${dim.barColor}" data-w="${score}"></div></div>
+      <p class="result-insight">${insights[i][insightIdx]}</p>
+    </div>`;
+  }).join('');
+
+  setTimeout(()=>{
+    document.querySelectorAll('.bar-fill').forEach(b=>{ b.style.width=b.dataset.w+'%'; });
+  },120);
+}
+
+function restartAssessment(){
+  currentDim=0; currentQ=0; answers={}; answeredQ=0;
+  showScreen('screen-intro');
+}
+</script>
+</body>
+</html>
